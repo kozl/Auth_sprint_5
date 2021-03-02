@@ -7,6 +7,7 @@ from multiprocessing import Pool, Queue
 
 from tqdm import tqdm
 
+NUM_JOBS = os.cpu_count()
 PASSWORD_CHARSET = string.digits + string.ascii_lowercase
 
 
@@ -32,7 +33,7 @@ def password_generator(charset: str = PASSWORD_CHARSET, length: int = 6) -> Gene
 if __name__ == '__main__':
     results = hashes_to_crack()
     progress_bar = tqdm(total=len(results))
-    with Pool(processes=os.cpu_count()) as pool:
+    with Pool(processes=NUM_JOBS) as pool:
         hash_generator = pool.imap(calculate_hash, password_generator(), chunksize=1000)
         hashes_cracked = 0
         for password, md5hash in hash_generator:
